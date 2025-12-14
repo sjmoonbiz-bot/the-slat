@@ -1,13 +1,10 @@
-import beforeImg from "./assets/before.webp";
-import afterImg from "./assets/after.webp";
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
+  Calculator,
   CheckCircle2,
   ClipboardCheck,
   Crown,
-  Calculator,
   ChevronDown,
   MessageCircle,
   MoveHorizontal,
@@ -19,8 +16,12 @@ import {
 } from "lucide-react";
 
 /**
- * BRAND / CONTACT
+ * ✅ 이미지 넣는 위치 (Vite 기준)
+ * - public/images/before.webp
+ * - public/images/after.webp
+ *  ※ jpg면 before.jpg / after.jpg로 바꾸고 IMAGES 경로도 같이 바꾸세요.
  */
+
 const BRAND = {
   name: "더슬렛",
   nameEn: "THE SLAT",
@@ -33,43 +34,23 @@ const CONTACT = {
   kakaoUrl: "https://open.kakao.com/o/sH00Mn6h",
 };
 
-/**
- * 💰 PRICING MODEL (판매가 기준)
- * - 소비자에게는 '기준가(standard)'로 인지되는 구조
- * - 최종 금액은 실측/현장 조건에 따라 변동 가능 (하단 고지)
- */
 const PRICING = {
-  BASIC: {
-    name: "Basic Line (산토리니)",
-    price: 49000,
-    desc: "가장 무난한 톤 · 데일리 텍스처",
-  },
-  STANDARD: {
-    name: "Standard Line (라비콤)",
-    price: 55000,
-    desc: "도톰한 두께감 · 고급 텍스처",
-  },
-  PREMIUM: {
-    name: "Premium Line (그린프)",
-    price: 62000,
-    desc: "정돈된 핏 · 차광 옵션 추천",
-  },
+  BASIC: { name: "Basic Line (산토리니)", price: 49000, desc: "가장 무난한 톤 · 데일리 텍스처" },
+  STANDARD: { name: "Standard Line (라비콤)", price: 55000, desc: "도톰한 두께감 · 고급 텍스처" },
+  PREMIUM: { name: "Premium Line (그린프)", price: 62000, desc: "정돈된 핏 · 차광 옵션 추천" },
   INSTALL_FEE: 70000,
   MIN_HEIGHT: 200,
-  ERROR_RATE: 0.08, // 예상 범위(±) 표시용
+  ERROR_RATE: 0.08,
 };
 
-/**
- * IMAGES (임시: 나중에 실사진으로 교체)
- * - 너가 사진 주면 여기 URL만 바꾸면 됨
- */
+const LINE_KEYS = ["BASIC", "STANDARD", "PREMIUM"];
+
 const IMAGES = {
   hero:
     "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1600&auto=format&fit=crop",
-  before:
-    beforeImg,
-  after:
-    afterImg,
+  // ✅ 여기만 파일 확장자/경로가 맞아야 합니다.
+  before: "/images/before.webp",
+  after: "/images/after.webp",
   gallery: [
     {
       src: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1000&auto=format&fit=crop",
@@ -90,20 +71,18 @@ const IMAGES = {
   ],
 };
 
-const LINE_KEYS = ["BASIC", "STANDARD", "PREMIUM"];
-
-/* ---------- UTILS ---------- */
+/* ---------------- utils ---------------- */
 function cn(...c) {
   return c.filter(Boolean).join(" ");
+}
+
+function clamp(n, a, b) {
+  return Math.max(a, Math.min(b, n));
 }
 
 function formatKRW(n) {
   if (!Number.isFinite(n) || Number.isNaN(n)) return "0원";
   return Math.round(n).toLocaleString("ko-KR") + "원";
-}
-
-function clamp(n, a, b) {
-  return Math.max(a, Math.min(b, n));
 }
 
 function scrollToId(id) {
@@ -113,11 +92,11 @@ function scrollToId(id) {
   window.scrollTo({ top: y, behavior: "smooth" });
 }
 
-/* ---------- TYPOGRAPHY (실제 적용 보장) ---------- */
+/* ---------------- typography (실제 적용 보장) ---------------- */
 function useLuxuryFonts() {
   useEffect(() => {
-    const fontId = "the-slat-fonts-v5";
-    const styleId = "the-slat-style-v5";
+    const fontId = "the-slat-fonts-v6";
+    const styleId = "the-slat-style-v6";
 
     if (!document.getElementById(fontId)) {
       const pre1 = document.createElement("link");
@@ -161,7 +140,7 @@ function useLuxuryFonts() {
   }, []);
 }
 
-/* ---------- SCROLL FADE ---------- */
+/* ---------------- motion ---------------- */
 function useScrollFade() {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef(null);
@@ -176,9 +155,7 @@ function useScrollFade() {
     }
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => setIsVisible(entry.isIntersecting));
-      },
+      (entries) => entries.forEach((e) => setIsVisible(e.isIntersecting)),
       { threshold: 0.1 }
     );
 
@@ -205,6 +182,7 @@ function FadeSection({ children, delay = "0ms" }) {
   );
 }
 
+/* ---------------- UI ---------------- */
 function Button({ children, onClick, href, variant = "primary", className = "" }) {
   const base =
     "inline-flex items-center justify-center gap-2 px-6 py-4 sm:px-8 text-[14px] sm:text-base font-medium transition-all duration-300 rounded-xl relative overflow-hidden group w-full sm:w-auto";
@@ -218,7 +196,8 @@ function Button({ children, onClick, href, variant = "primary", className = "" }
       {children} <ArrowUpRight size={16} />
     </span>
   );
-  if (href)
+
+  if (href) {
     return (
       <a
         href={href}
@@ -227,6 +206,8 @@ function Button({ children, onClick, href, variant = "primary", className = "" }
         {content}
       </a>
     );
+  }
+
   return (
     <button
       onClick={onClick}
@@ -238,7 +219,6 @@ function Button({ children, onClick, href, variant = "primary", className = "" }
   );
 }
 
-/* ---------- TOP NOTICE ---------- */
 function TopNotice() {
   const [visible, setVisible] = useState(true);
   if (!visible) return null;
@@ -257,6 +237,7 @@ function TopNotice() {
           className="absolute right-3 top-1/2 -translate-y-1/2 p-2 opacity-50 hover:opacity-100 sm:static sm:translate-y-0"
           aria-label="닫기"
           title="닫기"
+          type="button"
         >
           <X size={14} />
         </button>
@@ -265,7 +246,38 @@ function TopNotice() {
   );
 }
 
-/* ---------- BEFORE / AFTER (드래그 중에만 이동 + 스크롤 방해 최소화) ---------- */
+function FeatureStrip() {
+  const items = [
+    { title: "정돈된 라인", desc: "거실의 ‘결’을 정리해 공간이 넓어 보이게 만듭니다." },
+    { title: "빛의 각도", desc: "채광을 ‘눈부심’이 아닌 ‘분위기’로 바꿉니다." },
+    { title: "유지의 부담 ↓", desc: "관리 난이도를 낮춰, 오래 예쁘게 쓰는 선택이 됩니다." },
+  ];
+
+  return (
+    <section className="py-14 sm:py-16 bg-[#fdfcf8]">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {items.map((it) => (
+            <div key={it.title} className="bg-white border border-[#e5e5e5] rounded-2xl p-6">
+              <div className="flex items-center gap-2 text-[#c5a065] text-[11px] font-bold tracking-widest uppercase">
+                <Sparkles size={14} />
+                POINT
+              </div>
+              <div className="mt-3 font-serif text-lg text-[#1c1917]">{it.title}</div>
+              <div className="mt-2 text-sm text-neutral-500 font-light leading-relaxed">{it.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * ✅ 고정형 Before/After (이미지 자체는 절대 안 움직임)
+ * - BEFORE를 바닥에 고정으로 깔고
+ * - AFTER를 clip-path로만 잘라서 보여줌
+ */
 function BeforeAfter() {
   const [pos, setPos] = useState(50);
   const [dragging, setDragging] = useState(false);
@@ -284,12 +296,10 @@ function BeforeAfter() {
     updateByClientX(e.clientX);
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
-
   const onPointerMove = (e) => {
     if (!dragging) return;
     updateByClientX(e.clientX);
   };
-
   const endDrag = () => setDragging(false);
 
   return (
@@ -310,10 +320,10 @@ function BeforeAfter() {
         <div
           ref={ref}
           className={cn(
-            "relative w-full max-w-4xl mx-auto aspect-[16/9] sm:aspect-[16/9] rounded-2xl overflow-hidden select-none shadow-2xl",
+            "relative w-full max-w-4xl mx-auto aspect-[16/9] rounded-2xl overflow-hidden select-none shadow-2xl",
             dragging ? "cursor-ew-resize" : "cursor-default"
           )}
-          style={{ touchAction: "pan-y" }} // 세로 스크롤 허용
+          style={{ touchAction: "pan-y" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -322,92 +332,51 @@ function BeforeAfter() {
           role="group"
           aria-label="시공 전후 비교 슬라이더"
         >
+          {/* BASE: BEFORE */}
+          <img
+            src={IMAGES.before}
+            alt="시공 전 (Before)"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            draggable={false}
+          />
+          <div className="absolute top-4 left-4 bg-[#1c1917] text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+            BEFORE
+          </div>
+
+          {/* TOP: AFTER (clip-path) */}
           <img
             src={IMAGES.after}
             alt="시공 후 (After)"
             className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
+            style={{
+              clipPath: `inset(0 0 0 ${pos}%)`,
+              WebkitClipPath: `inset(0 0 0 ${pos}%)`,
+            }}
+            loading="eager"
             decoding="async"
+            draggable={false}
           />
           <div className="absolute top-4 right-4 bg-[#c5a065] text-white text-xs font-bold px-3 py-1 rounded-full z-10">
             AFTER
           </div>
 
-          <div className="absolute inset-0 overflow-hidden" style={{ width: `${pos}%` }}>
-            <img
-              src={IMAGES.before}
-              alt="시공 전 (Before)"
-              className="absolute inset-0 w-full h-full object-cover max-w-none"
-              style={{ width: "100%", height: "100%" }}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute top-4 left-4 bg-[#1c1917] text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-              BEFORE
-            </div>
-          </div>
-
+          {/* BAR */}
           <div
             className="absolute top-0 bottom-0 w-1 bg-white z-20 shadow-[0_0_10px_rgba(0,0,0,0.45)]"
             style={{ left: `${pos}%` }}
           >
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg text-[#1c1917]"
-              aria-label="드래그 핸들"
-            >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg text-[#1c1917]">
               <MoveHorizontal size={18} />
             </div>
           </div>
         </div>
-
-        <div className="mt-4 text-center text-[12px] text-neutral-500">
-          * 현재 이미지는 분위기 참고용 임시 이미지입니다. (실사진 적용 시 전환율 상승)
-        </div>
       </div>
     </section>
   );
 }
 
-/* ---------- FEATURE STRIP (설득 보강) ---------- */
-function FeatureStrip() {
-  const items = [
-    {
-      title: "정돈된 라인",
-      desc: "거실의 ‘결’을 정리해 공간이 넓어 보이게 만듭니다.",
-    },
-    {
-      title: "빛의 각도",
-      desc: "채광을 ‘눈부심’이 아닌 ‘분위기’로 바꿉니다.",
-    },
-    {
-      title: "유지의 부담 ↓",
-      desc: "관리 난이도를 낮춰, 오래 예쁘게 쓰는 선택이 됩니다.",
-    },
-  ];
-  return (
-    <section className="py-14 sm:py-16 bg-[#fdfcf8]">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {items.map((it) => (
-            <div
-              key={it.title}
-              className="bg-white border border-[#e5e5e5] rounded-2xl p-6"
-            >
-              <div className="flex items-center gap-2 text-[#c5a065] text-[11px] font-bold tracking-widest uppercase">
-                <Sparkles size={14} />
-                POINT
-              </div>
-              <div className="mt-3 font-serif text-lg text-[#1c1917]">{it.title}</div>
-              <div className="mt-2 text-sm text-neutral-500 font-light leading-relaxed">{it.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- TOAST ---------- */
 function Toast({ show, text }) {
   return (
     <div
@@ -425,19 +394,17 @@ function Toast({ show, text }) {
   );
 }
 
-/* ---------- REAL ESTIMATE (UI 불일치 전부 제거 + 범위 고지) ---------- */
 function RealEstimate() {
   const [inputs, setInputs] = useState({
     widthCm: 300,
     heightCm: 230,
     count: 1,
     line: "STANDARD",
-    pet: false, // 메모/추천에만 반영 (가격 단정 X)
+    pet: false,
   });
 
-  // 밴드왜건(숫자 고정/랜덤)
   const [todayCount, setTodayCount] = useState(0);
-  useEffect(() => setTodayCount(22 + Math.floor(Math.random() * 11)), []); // 22~32
+  useEffect(() => setTodayCount(22 + Math.floor(Math.random() * 11)), []);
 
   const [toast, setToast] = useState({ show: false, text: "" });
   const toastTimer = useRef(null);
@@ -447,12 +414,10 @@ function RealEstimate() {
     const h = Math.max(Number(inputs.heightCm) || 0, PRICING.MIN_HEIGHT);
     const c = clamp(Number(inputs.count) || 1, 1, 10);
 
-    // 회배(m2): (가로 * 세로) / 10000 * 개수
     const hebe = (w * h) / 10000 * c;
 
     const unitPrice = PRICING[inputs.line]?.price ?? PRICING.STANDARD.price;
-    const material = hebe * unitPrice;
-    const raw = material + PRICING.INSTALL_FEE;
+    const raw = hebe * unitPrice + PRICING.INSTALL_FEE;
 
     const min = Math.floor((raw * (1 - PRICING.ERROR_RATE)) / 1000) * 1000;
     const mid = Math.floor(raw / 1000) * 1000;
@@ -465,7 +430,6 @@ function RealEstimate() {
       max,
       lineName: PRICING[inputs.line]?.name ?? PRICING.STANDARD.name,
       lineDesc: PRICING[inputs.line]?.desc ?? PRICING.STANDARD.desc,
-      heightApplied: h,
       countApplied: c,
     };
   }, [inputs]);
@@ -506,7 +470,7 @@ function RealEstimate() {
                 </span>
               </div>
               <div className="text-[11px] text-neutral-500 font-light">
-                🔥 오늘 <span className="font-medium text-[#1c1917]">{todayCount}명</span>이 견적을 확인
+                🔥 오늘 <span className="font-medium text-[#1c1917]">{todayCount}명</span>이 견적 확인
               </div>
             </div>
 
@@ -535,12 +499,7 @@ function RealEstimate() {
                     )}
                   >
                     <div>
-                      <div
-                        className={cn(
-                          "text-sm font-bold",
-                          inputs.line === key ? "text-[#1c1917]" : "text-neutral-600"
-                        )}
-                      >
+                      <div className={cn("text-sm font-bold", inputs.line === key ? "text-[#1c1917]" : "text-neutral-600")}>
                         {PRICING[key].name}
                       </div>
                       <div className="text-xs text-neutral-400 mt-0.5">{PRICING[key].desc}</div>
@@ -627,7 +586,7 @@ function RealEstimate() {
               <div className="text-[12px] font-bold text-[#1c1917]">정확도 올리는 가장 빠른 방법</div>
               <div className="mt-1 text-[12px] text-neutral-500 font-light leading-relaxed">
                 거실/창 사진 <span className="font-medium text-[#1c1917]">1~2장</span>만 주시면,
-                레일/마감/창 구조에 맞춘 “현실적인” 안내가 빨라집니다.
+                레일/마감/창 구조에 맞춘 안내가 빨라집니다.
               </div>
             </div>
           </div>
@@ -659,7 +618,7 @@ function RealEstimate() {
 
             <div className="text-xs text-white/45 mt-5 font-light space-y-1 leading-relaxed">
               <p>• 입력값 기준 예상 견적이며, 실측 후 최종 확정됩니다.</p>
-              <p>• 변동 요인: 창 구조/레일/마감, 난이도, 옵션(차광·내구 등)</p>
+              <p>• 변동 요인: 창 구조/마감, 설치 난이도, 옵션(차광·내구 등)</p>
             </div>
 
             <div className="mt-7 pt-6 border-t border-white/10 flex items-center justify-between text-sm">
@@ -685,7 +644,6 @@ function RealEstimate() {
   );
 }
 
-/* ---------- GUARANTEE (과장/수치 제거, 정책형 고지) ---------- */
 function GuaranteeBadge() {
   return (
     <div className="mt-10 sm:mt-16 border border-[#e5e5e5] bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -716,34 +674,29 @@ function GuaranteeBadge() {
   );
 }
 
-/* ---------- FAQ (과장 표현 정리) ---------- */
 function FAQ() {
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqs = [
     {
       q: "견적이 다른 곳보다 비싼가요?",
-      a: "가격은 원단 등급, 마감, 레일/부속, 설치 난이도에 따라 달라집니다. 같은 분위기를 오래 유지하려면 초기 품질과 마감이 중요합니다. 먼저 ‘예상 범위’를 확인하고, 실측 후 정확한 옵션을 비교해 보시는 걸 권합니다.",
-    },
-    {
-      q: "세탁/관리는 얼마나 편한가요?",
-      a: "오염이 생겼을 때의 관리 난이도가 핵심입니다. 구성/원단/설치 방식에 따라 관리 방법이 달라질 수 있어, 상담 시 ‘내 집 구조 기준’으로 가장 현실적인 관리 방법을 안내드립니다.",
+      a: "가격은 원단 등급, 마감, 레일/부속, 설치 난이도에 따라 달라집니다. 먼저 ‘예상 범위’를 확인하고, 실측 후 정확한 옵션을 비교해 보시는 걸 권합니다.",
     },
     {
       q: "사생활 보호는 괜찮나요?",
-      a: "각도 조절로 채광과 시야를 동시에 설계할 수 있습니다. 낮/밤 환경에 따라 최적 각도가 달라서, 설치 후 사용 루틴까지 안내해 드립니다.",
+      a: "각도 조절로 채광과 시야를 동시에 설계할 수 있습니다. 낮/밤 환경에 따라 최적 각도가 달라 설치 후 사용 루틴까지 안내드립니다.",
     },
     {
       q: "반려동물/아이가 있으면 걱정돼요",
-      a: "가정 환경에 따라 권장 원단과 옵션이 달라집니다. 내구(스크래치/오염) 우선이면 그에 맞춘 라인/옵션을 추천드립니다. 사진 1~2장 주시면 더 정확합니다.",
+      a: "가정 환경에 따라 권장 원단과 옵션이 달라집니다. 내구·오염 우선이면 그에 맞춘 라인/옵션을 추천드립니다. 사진 1~2장 주시면 더 정확합니다.",
     },
     {
       q: "이사 갈 때 재설치 가능한가요?",
-      a: "가능한 경우가 많지만, 창 사이즈/레일 길이/벽체 구조에 따라 가공이 필요할 수 있습니다. 이사 예정이라면 상담 시 그 전제까지 포함해 안내드립니다.",
+      a: "가능한 경우가 많지만, 창 사이즈/레일 길이/벽체 구조에 따라 가공이 필요할 수 있습니다. 이사 예정이면 전제까지 포함해 안내드립니다.",
     },
     {
       q: "A/S는 어떻게 진행되나요?",
-      a: "기본 A/S 범위(시공/제품) 내에서는 신속하게 대응합니다. 범위/기간/유상 여부는 정책에 따라 달라질 수 있어, 상담 시 정확한 조건으로 안내드립니다.",
+      a: "기본 A/S 범위(시공/제품) 내에서는 신속히 대응합니다. 범위/기간/유상 여부는 정책에 따라 달라질 수 있어 상담 시 정확한 조건으로 안내드립니다.",
     },
   ];
 
@@ -784,6 +737,7 @@ function FAQ() {
                 )}
               />
             </button>
+
             <div
               className={cn(
                 "overflow-hidden transition-[max-height] duration-300 ease-in-out",
@@ -801,7 +755,6 @@ function FAQ() {
   );
 }
 
-/* ---------- REVIEWS (허위 위험 제거) ---------- */
 function ReviewCard({ who, text, product }) {
   return (
     <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border border-[#e5e5e5] hover:shadow-lg transition-shadow duration-500 h-full flex flex-col justify-between">
@@ -826,7 +779,6 @@ function ReviewCard({ who, text, product }) {
   );
 }
 
-/* ---------- MOBILE STICKY CTA ---------- */
 function MobileSticky() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-[#e5e5e5] sm:hidden pb-[env(safe-area-inset-bottom)]">
@@ -849,7 +801,6 @@ function MobileSticky() {
   );
 }
 
-/* ---------- APP ---------- */
 export default function App() {
   useLuxuryFonts();
 
@@ -869,6 +820,7 @@ export default function App() {
               High-end Window Styling
             </span>
           </div>
+
           <button
             onClick={() => scrollToId("estimate")}
             className="hidden sm:inline-flex px-5 py-2.5 bg-[#1c1917] text-white text-xs font-bold rounded-lg hover:bg-[#333] transition-colors"
@@ -959,7 +911,7 @@ export default function App() {
               </h3>
             </div>
             <p className="text-white/40 text-xs sm:text-sm font-light max-w-md text-left md:text-right">
-              현재 이미지는 분위기 참고용입니다. (실시공 사진 적용 시 신뢰도와 전환율이 크게 올라갑니다)
+              갤러리는 추후 실사진으로 교체하면 신뢰도와 전환율이 더 올라갑니다.
             </p>
           </div>
 
@@ -1009,7 +961,7 @@ export default function App() {
           <GuaranteeBadge />
           <FAQ />
 
-          {/* CTA (복사 후 이동 지점) */}
+          {/* CTA */}
           <div id="cta" className="mt-14 sm:mt-20">
             <div className="bg-white border border-[#e5e5e5] rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-2 text-[#c5a065] text-[10px] font-bold tracking-widest uppercase">
