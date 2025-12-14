@@ -1,3 +1,5 @@
+import beforeImg from "./assets/before.webp";
+import afterImg from "./assets/after.webp";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -64,9 +66,9 @@ const IMAGES = {
   hero:
     "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1600&auto=format&fit=crop",
   before:
-    "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?q=80&w=1200&auto=format&fit=crop",
+    "/images/before.webp",
   after:
-    "https://images.unsplash.com/photo-1615873968403-89e068629265?q=80&w=1200&auto=format&fit=crop",
+    "/images/after.webp",
   gallery: [
     {
       src: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1000&auto=format&fit=crop",
@@ -307,7 +309,7 @@ function BeforeAfter() {
         <div
           ref={ref}
           className={cn(
-            "relative w-full max-w-4xl mx-auto aspect-[4/3] sm:aspect-[16/9] rounded-2xl overflow-hidden select-none shadow-2xl",
+            "relative w-full max-w-4xl mx-auto aspect-[16/9] sm:aspect-[16/9] rounded-2xl overflow-hidden select-none shadow-2xl",
             dragging ? "cursor-ew-resize" : "cursor-default"
           )}
           style={{ touchAction: "pan-y" }} // 세로 스크롤 허용
