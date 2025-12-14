@@ -1,5 +1,6 @@
 import beforeImg from "./assets/before.webp";
 import afterImg from "./assets/after.webp";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -66,9 +67,9 @@ const IMAGES = {
   hero:
     "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1600&auto=format&fit=crop",
   before:
-    "/images/before.webp",
+    beforeImg,
   after:
-    "/images/after.webp",
+    afterImg,
   gallery: [
     {
       src: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1000&auto=format&fit=crop",
