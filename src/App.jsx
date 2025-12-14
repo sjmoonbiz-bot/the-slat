@@ -1,3 +1,5 @@
+import beforeImg from "./assets/before.webp";
+import afterImg from "./assets/after.webp";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -14,8 +16,7 @@ import {
   Star,
   X,
 } from "lucide-react";
-import beforeImg from "./assets/before.webp";
-import afterImg from "./assets/after.webp";
+
 
 /**
  * ✅ 이미지 넣는 위치 (Vite 기준)
