@@ -55,6 +55,11 @@ const SEO = {
 };
 
 /* ========================================
+   현재 날짜 정보
+======================================== */
+const CURRENT_MONTH = new Date().getMonth() + 1; // 1~12
+
+/* ========================================
    브랜드 & 연락처 정보
 ======================================== */
 const BRAND = {
@@ -424,7 +429,7 @@ function UrgencyBanner() {
   return (
     <div className="bg-neutral-900 text-white py-2.5 relative z-[60]">
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-center gap-4 text-sm">
-        <span className="hidden sm:inline text-amber-400 font-medium">🎁 12월 한정</span>
+        <span className="hidden sm:inline text-amber-400 font-medium">🎁 {CURRENT_MONTH}월 한정</span>
         <span>
           무료 실측 + <span className="text-amber-400 font-bold">10% 할인</span>
         </span>
@@ -1983,7 +1988,7 @@ function CTASection() {
           {/* 긴급성 뱃지 */}
           <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm mb-6">
             <Clock size={16} />
-            12월 한정 혜택 마감 임박
+            {CURRENT_MONTH}월 한정 혜택 마감 임박
           </div>
           
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light leading-tight mb-6">
