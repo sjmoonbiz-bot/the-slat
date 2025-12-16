@@ -80,7 +80,7 @@ const CONTACT = {
   sms: "010-7534-2913", // 문자 수신 번호
   kakaoUrl: "https://open.kakao.com/o/sH00Mn6h",
   kakaoChannelId: "_xkxkAb", // 카카오톡 채널 ID (실제 채널 ID로 변경 필요)
-  instagram: "https://instagram.com/theslat_busan", // 인스타그램 URL
+  instagram: "https://www.instagram.com/the_slat_unislat", // 인스타그램 URL
 };
 
 /* ========================================
